@@ -13,9 +13,6 @@ class MongoDb extends DbDumper
     /** @var null|string */
     protected $collection = null;
 
-    /** @var bool */
-    protected $enableCompression = false;
-
     /** @var null|string */
     protected $authenticationDatabase = null;
 
@@ -67,16 +64,6 @@ class MongoDb extends DbDumper
     public function setCollection(string $collection)
     {
         $this->collection = $collection;
-
-        return $this;
-    }
-
-    /**
-     * @return \Spatie\DbDumper\Databases\MongoDb
-     */
-    public function enableCompression()
-    {
-        $this->enableCompression = true;
 
         return $this;
     }

@@ -199,8 +199,6 @@ class MySql extends DbDumper
             $command[] = '--set-gtid-purged='.$this->setGtidPurged;
         }
 
-        $command[] = "--result-file=\"{$dumpFile}\"";
-
         if (! $this->dbNameWasSetAsExtraOption) {
             $command[] = $this->dbName;
         }
@@ -209,6 +207,12 @@ class MySql extends DbDumper
             $includeTables = implode(' ', $this->includeTables);
             $command[] = "--tables {$includeTables}";
         }
+
+        if ($this->enableCompression) {
+            $command[] = '| gzip';
+        }
+
+        $command[] = "> \"$dumpFile\"";
 
         return implode(' ', $command);
     }

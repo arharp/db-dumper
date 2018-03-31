@@ -41,6 +41,9 @@ abstract class DbDumper
     /** @var array */
     protected $extraOptions = [];
 
+    /** @var bool */
+    protected $enableCompression = false;
+
     public static function create()
     {
         return new static();
@@ -210,6 +213,16 @@ abstract class DbDumper
         if (! empty($extraOption)) {
             $this->extraOptions[] = $extraOption;
         }
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function enableCompression()
+    {
+        $this->enableCompression = true;
 
         return $this;
     }

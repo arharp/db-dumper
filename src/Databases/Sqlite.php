@@ -38,11 +38,18 @@ class Sqlite extends DbDumper
      */
     public function getDumpCommand(string $dumpFile): string
     {
-        return sprintf(
-            "echo 'BEGIN IMMEDIATE;\n.dump' | '%ssqlite3' --bail '%s' >'%s'",
-            $this->dumpBinaryPath,
-            $this->dbName,
-            $dumpFile
-        );
+        $command = [
+            "echo 'BEGIN IMMEDIATE;\n.dump'",
+            "| '{$this->dumpBinaryPath}sqlite3' --bail",
+            "'$this->dbName'"
+        ];
+
+        if ($this->enableCompression) {
+            $command[] = '| gzip';
+        }
+
+        $command[] = "> '$dumpFile'";
+
+        return implode(' ', $command);
     }
 }

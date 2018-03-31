@@ -69,7 +69,6 @@ class PostgreSql extends DbDumper
             "-U {$this->userName}",
             '-h '.($this->socket === '' ? $this->host : $this->socket),
             "-p {$this->port}",
-            "--file=\"{$dumpFile}\"",
         ];
 
         if ($this->useInserts) {
@@ -87,6 +86,12 @@ class PostgreSql extends DbDumper
         if (! empty($this->excludeTables)) {
             $command[] = '-T '.implode(' -T ', $this->excludeTables);
         }
+
+        if ($this->enableCompression) {
+            $command[] = '| gzip';
+        }
+
+        $command[] = "> \"$dumpFile\"";
 
         return implode(' ', $command);
     }
