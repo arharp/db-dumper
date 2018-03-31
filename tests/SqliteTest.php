@@ -20,7 +20,7 @@ class SqliteTest extends TestCase
             ->setDbName('dbname.sqlite')
             ->getDumpCommand('dump.sql');
 
-        $expected = "echo 'BEGIN IMMEDIATE;\n.dump' | 'sqlite3' --bail 'dbname.sqlite' >'dump.sql'";
+        $expected = "echo 'BEGIN IMMEDIATE;\n.dump' | 'sqlite3' --bail 'dbname.sqlite' > 'dump.sql'";
 
         $this->assertEquals($expected, $dumpCommand);
     }
@@ -33,7 +33,7 @@ class SqliteTest extends TestCase
             ->setDumpBinaryPath('/usr/bin')
             ->getDumpCommand('/save/to/dump.sql');
 
-        $expected = "echo 'BEGIN IMMEDIATE;\n.dump' | '/usr/bin/sqlite3' --bail '/path/to/dbname.sqlite' >'/save/to/dump.sql'";
+        $expected = "echo 'BEGIN IMMEDIATE;\n.dump' | '/usr/bin/sqlite3' --bail '/path/to/dbname.sqlite' > '/save/to/dump.sql'";
 
         $this->assertEquals($expected, $dumpCommand);
     }
@@ -50,5 +50,18 @@ class SqliteTest extends TestCase
 
         $this->assertFileExists($dbBackupPath);
         $this->assertNotEquals(0, filesize($dbBackupPath), 'Sqlite dump cannot be empty');
+    }
+
+    /** @test */
+    public function it_can_generate_a_dump_command_with_compression_enabled()
+    {
+        $dumpCommand = Sqlite::create()
+            ->setDbName('dbname.sqlite')
+            ->enableCompression()
+            ->getDumpCommand('dump.sql');
+
+        $expected = "echo 'BEGIN IMMEDIATE;\n.dump' | 'sqlite3' --bail 'dbname.sqlite' | gzip > 'dump.sql'";
+
+        $this->assertEquals($expected, $dumpCommand);
     }
 }
